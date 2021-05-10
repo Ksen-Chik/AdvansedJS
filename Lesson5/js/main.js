@@ -40,7 +40,7 @@ const app = new Vue({
                 quantity: 1
               };
               this.goods.push(product1);
-              document.querySelector('.clearCart').textContent = '';
+              this.$refs.clearCart.textContent = '';
             }
           } else {
             alert('Error');
@@ -58,33 +58,24 @@ const app = new Vue({
               this._updateCart(find);
             } else { // удаляем
               this.goods.splice(this.goods.indexOf(find), 1);
-              document.querySelector(`.cart-item[data-id="${productId}"]`).remove();
               if (this.goods.length === 0) {
-                document.querySelector('.clearCart').textContent = `Ваша корзина пуста`;
+                this.$refs.clearCart.textContent = 'Ваша корзина пуста';
               }
             }
+
           } else {
             alert('Error');
           }
         })
     },
     _updateCart(product) {
-      let block = document.querySelector(`.cart-item[data-id="${product.id_product}"]`);
-      block.querySelector('.product-quantity').textContent = `Количество: ${product.quantity}`;
-      block.querySelector('.product-price').textContent = `${product.quantity * product.price} ₽`;
+      this.$refs.productQuantity.textContent = `Количество: ${product.quantity}`;
+      this.$refs.productPrice.textContent = `${product.quantity * product.price} ₽`;
     },
     filter() {
       let value = this.message;
       const regexp = new RegExp(value, 'i');
-      this.filtered = this.products.filter(product => regexp.test(product.product_name));
-      this.products.forEach(el => {
-        const block = document.querySelector(`.product-item[data-id="${el.id_product}"]`);
-        if (!this.filtered.includes(el)) {
-          block.classList.add('invisible');
-        } else {
-          block.classList.remove('invisible');
-        }
-      })
+      this.filtered = this.products.filter(el => regexp.test(el.product_name));
     },
   },
 
@@ -94,6 +85,7 @@ const app = new Vue({
       .then(data => {
         for (let el of data) {
           this.products.push(el);
+          this.filtered.push(el);
         }
       });
 
